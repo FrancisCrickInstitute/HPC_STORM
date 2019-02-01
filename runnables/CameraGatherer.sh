@@ -27,8 +27,8 @@ ml LibTIFF/4.0.4-foss-2016b
 # We should use the user provided as cannon
 if [ -z "$CAMERA_RAW" ]; then
     # Use tiffinfo to assess our detector
-    CAMERAstring=`tiffinfo -0 ${FILE} 2> /dev/null | grep Detector |  sed 's/^.*Detector ID="// ; s/".*$//' | tr " " "_"`
-    echo ${CAMERAstring}
+    CAMERAstring=$(tiffinfo -0 ${FILE} 2> /dev/null | grep Detector |  sed 's/^.*Detector ID="// ; s/".*$//' | tr " " "_")
+    echo "Camera String: ${CAMERAstring}"
     case ${CAMERAstring} in
         *Prime95B*) CAMERA="Prime95B" ;;
         *Andor_iXon_Ultra*) CAMERA="Andor_iXon_Ultra" ;;

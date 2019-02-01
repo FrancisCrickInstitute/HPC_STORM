@@ -31,7 +31,7 @@ class Pipeline:
         files = []
         for file in next(os.walk(self._engine.get_file_system().get_source_directory()))[2]:
             if file.endswith(".ome.tif") or file.endswith(".ome.tiff"):
-                files.append(file)
+                files.append(os.path.join(self._engine.get_file_system().get_source_directory(), file))
 
         if len(files) == 0:
             self._engine.error("No valid source files found.")
@@ -176,7 +176,7 @@ class TiffSizeCalculator(PipelineStep):
     def do_after(self, engine):
         # Map files to tiff stack size
         for file in self.get_pipeline().get_files():
-            source_file = engine.get_file_system().get_working_directory() + os.path.basename(file).replace(".ome.tiff", "_count.txt").replace(".ome.tif", "_count.txt")
+            source_file = os.path.join(engine.get_file_system().get_working_directory(), os.path.basename(file).replace(".ome.tiff", "_count.txt").replace(".ome.tif", "_count.txt"))
             with open(source_file) as f:
                 value = int(f.readline())
 
