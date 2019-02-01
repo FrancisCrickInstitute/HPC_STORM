@@ -170,7 +170,7 @@ class TiffSizeCalculator(PipelineStep):
 
     def map_arguments(self, engine, batch_number):
         self.parameter_string += " -f=" + self.get_pipeline().get_files()[batch_number]
-        self.parameter_string += " -t=" + engine.get_file_system().get_working_directory() + os.path.basename(self.get_pipeline().get_files()[batch_number]).replace(".ome.tiff", "_count.txt").replace(".ome.tif", "_count.txt")
+        self.parameter_string += " -t=" + os.path.join(engine.get_file_system().get_working_directory(), os.path.basename(self.get_pipeline().get_files()[batch_number]).replace(".ome.tiff", "_count.txt").replace(".ome.tif", "_count.txt"))
         return self.parameter_string
 
     def do_after(self, engine):
