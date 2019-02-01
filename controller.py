@@ -115,6 +115,9 @@ class Pipeline:
     def get_plugins_directory(self):
         return self.plugins_directory
 
+    def get_camera(self):
+        return self.camera
+
     def get_threed(self):
         return self.threed
 
