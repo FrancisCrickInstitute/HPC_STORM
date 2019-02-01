@@ -201,7 +201,7 @@ class LocalisationRunner(PipelineStep):
     def do_before(self, engine):
         self.parameter_string += " -c=" + self.get_pipeline().get_plugins_directory()
         self.parameter_string += " -s=" + os.path.join(os.path.dirname(os.path.realpath(__file__)), "macros", "localisation.ijm")
-        self.parameter_string += " -threed=" + self.get_pipeline().get_threed()
+        self.parameter_string += " -threed=" + str(self.get_pipeline().get_threed())
 
         calib = self.get_pipeline().get_calibration()
         if calib != "":
