@@ -5,12 +5,12 @@ parts=split(ARGS, ":");
 
 WORK=parts[0];
 FNAME=parts[1];
-STEPS=parts[3];
-START=parts[4];
-STOP=parts[5];
-THREED=parts[6];
-CAMERA=parts[7];
-CALIB=parts[8];
+STEPS=parts[2];
+START=parts[3];
+STOP=parts[4];
+THREED=parts[5];
+CAMERA=parts[6];
+CALIB=parts[7];
 
 fullname=split(FNAME, ".");
 NAME=fullname[0];

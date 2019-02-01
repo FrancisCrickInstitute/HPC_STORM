@@ -199,6 +199,7 @@ class LocalisationRunner(PipelineStep):
         super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "runnables", "RunLocalisation.sh"), pipeline)
 
     def do_before(self, engine):
+        self.parameter_string += " -w=" + engine.get_file_system().get_working_directory()
         self.parameter_string += " -c=" + self.get_pipeline().get_plugins_directory()
         self.parameter_string += " -s=" + os.path.join(os.path.dirname(os.path.realpath(__file__)), "macros", "localisation.ijm")
         self.parameter_string += " -threed=" + str(self.get_pipeline().get_threed())
