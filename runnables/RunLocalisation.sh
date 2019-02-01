@@ -63,7 +63,7 @@ echo "Display acquired: ${DISPLAY}"
 source ${WORKING_DIRECTORY}/environmental_vars.sh
 
 echo "Running localisation script with parameters: "
-ImageJ-linux64 -Dij1.plugin.dirs=$IJ_DIR/jars:$IJ_DIR/plugins:${CUSTOM_PLUGINS_PATH} --allow-multiple --no-splash -batch ${SCRIPT} ${WORKING_DIRECTORY}:${FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
+ImageJ-linux64 -Dij1.plugin.dirs=${CUSTOM_PLUGINS_PATH} --allow-multiple --no-splash -batch ${SCRIPT} ${WORKING_DIRECTORY}:${FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
 
 echo "Finishing Localization time $(date)"
 
