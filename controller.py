@@ -152,7 +152,7 @@ class PipelineStep:
 
 class CameraGatherer(PipelineStep):
     def __init__(self, pipeline):
-        super().__init__("CameraGatherer.sh", pipeline)
+        super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "macros", "CameraGatherer.sh"), pipeline)
 
     def do_before(self, engine):
         self.parameter_string += " -c=" + self.get_pipeline().get_camera()
@@ -166,7 +166,7 @@ class CameraGatherer(PipelineStep):
 
 class TiffSizeCalculator(PipelineStep):
     def __init__(self, pipeline):
-        super().__init__("TiffSizeCalculator.sh", pipeline)
+        super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "macros", "TiffSizeCalculator.sh"), pipeline)
 
     def map_arguments(self, engine, batch_number):
         self.parameter_string += " -f=" + self.get_pipeline().get_files()[batch_number]
@@ -194,9 +194,9 @@ class TiffSizeCalculator(PipelineStep):
         self.get_pipeline().set_batch_counter(0)
 
 
-class STORMRunner(PipelineStep):
+class LocalisationRunner(PipelineStep):
     def __init__(self, pipeline):
-        super().__init__("RunSTORM.sh", pipeline)
+        super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "macros", "RunLocalisation.sh"), pipeline)
 
     def do_before(self, engine):
         self.parameter_string += " -c=" + self.get_pipeline().get_plugins_directory()
@@ -249,7 +249,7 @@ def execute_pipeline(engine):
         return False
 
     # Loop through our fov's and perform thunderstorm on each
-    if not engine.submit_chunk_and_wait_for_execution(pipeline.get_total_batches(), pipeline.max_concurrent_jobs, STORMRunner(pipeline)):
+    if not engine.submit_chunk_and_wait_for_execution(pipeline.get_total_batches(), pipeline.max_concurrent_jobs, LocalisationRunner(pipeline)):
         engine.error("Failed to execute the STORM runner.")
         return False
 
