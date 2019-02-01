@@ -63,14 +63,14 @@ Ext.getSizeX(sizeX);
 Ext.getSizeY(sizeY);
 Ext.close();
 
-File.append("Frames from " + START + " to " + END, LOGPATH);
+File.append("Frames from " + START + " to " + STOP, LOGPATH);
 
 START = parseInt(START);
 STOP = parseInt(STOP);
 STEPS = parseInt(STEPS);
 
 //run("Memory & Threads...", "maximum=65536 parallel=24”);
-File.append("Bio-Formats Importer"+","+"open="+FILEPATH+" color_mode=Default specify_range view=[Standard ImageJ] stack_order=Default t_begin="+START+" t_end="+END+" t_step="+STEPS+"",LOGPATH);
+File.append("Bio-Formats Importer"+","+"open="+FILEPATH+" color_mode=Default specify_range view=[Standard ImageJ] stack_order=Default t_begin="+START+" t_end="+STOP+" t_step="+STEPS+"",LOGPATH);
 run("Bio-Formats Importer","open="+FILEPATH+" color_mode=Default specify_range view=[Standard ImageJ] stack_order=Default t_begin="+START+" t_end="+STOP+" t_step="+STEPS+"");
 
 File.append("Imported Dataset to FIJI at " + getTimeString(), LOGPATH);
@@ -146,7 +146,7 @@ if (File.exists(CONFPATH))  {
     File.delete(CONFPATH);
 }
 conff = File.open(CONFPATH);
-LINE = toString(START)+":"+END+":"+PIXELWIDTH+":"+sizeX+":"+sizeY+":";
+LINE = toString(START)+":"+STOP+":"+PIXELWIDTH+":"+sizeX+":"+sizeY+":";
 File.append(LINE, CONFPATH);
 File.close(conff);
 
