@@ -13,7 +13,8 @@ CAMERA=parts[6];
 CALIB=parts[7];
 
 fullname=split(FNAME, ".");
-NAME=fullname[0];
+fullname=split(fullname[0], "/");
+NAME=fullname[fullname.length - 1];
 
 LOGPATH = WORK + "/tmp_" + NAME + "_" + START + ".log";
 
