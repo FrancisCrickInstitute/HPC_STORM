@@ -5,17 +5,17 @@ parts=split(ARGS, ":");
 
 WORK=parts[0];
 FNAME=parts[1];
-JOBNO=parts[2];
-NJOBS=parts[3];
-BLOCK=parts[4];
-THREED=parts[5];
-CAMERA=parts[6];
-CALIB=parts[7];
+STEPS=parts[3];
+START=parts[4];
+STOP=parts[5];
+THREED=parts[6];
+CAMERA=parts[7];
+CALIB=parts[8];
 
 fullname=split(FNAME, ".");
 NAME=fullname[0];
 
-LOGPATH = WORK + "/" + JOBNO + "/tmp_" + NAME + "_" + BLOCK + ".log";
+LOGPATH = WORK + "/tmp_" + NAME + "_" + START + ".log";
 
 if (File.exists(LOGPATH))  {
     File.delete(LOGPATH);
@@ -28,14 +28,12 @@ File.append(ARGS,LOGPATH);
 File.append("Opened log file at " + getTimeString(), LOGPATH);
 File.append("ImageJ version " + getVersion(), LOGPATH);
 
-// NB TMPDIR points to our own
-// temporary directory
-// but we should already be running from there anyway
-if (BLOCK == "1")  {
-    OUTPATH = "tmp_" + NAME + "_slice_1.csv";
+// TODO: Switch to node dir?
+if (START == "1")  {
+    OUTPATH = WORK + "/tmp_" + NAME + "_slice_1.csv";
     SAVEPROTOCOL = "true";
 } else {
-    OUTPATH = "tmp_" + NAME + "_slice_" +BLOCK + ".csv";
+    OUTPATH = WORK + "/tmp_" + NAME + "_slice_" + START + ".csv";
     SAVEPROTOCOL = "false";
 }
 
@@ -64,31 +62,44 @@ Ext.getSizeX(sizeX);
 Ext.getSizeY(sizeY);
 Ext.close();
 
-FIRST = parseInt(BLOCK);
-LAST = sizeT;
-LAST=10000;
+File.append("Frames from " + START + " to " + END, LOGPATH);
 
-File.append("Frames from " + FIRST + " to " + LAST, LOGPATH);
+START = parseInt(START);
+STOP = parseInt(STOP);
+STEPS = parseInt(STEPS);
 
 //run("Memory & Threads...", "maximum=65536 parallel=24”);
-run("Bio-Formats Importer","open="+FILEPATH+" color_mode=Default specify_range view=[Standard ImageJ] stack_order=Default t_begin="+FIRST+" t_end="+LAST+" t_step="+NJOBS+"");
+File.append("Bio-Formats Importer"+","+"open="+FILEPATH+" color_mode=Default specify_range view=[Standard ImageJ] stack_order=Default t_begin="+START+" t_end="+END+" t_step="+STEPS+"",LOGPATH);
+run("Bio-Formats Importer","open="+FILEPATH+" color_mode=Default specify_range view=[Standard ImageJ] stack_order=Default t_begin="+START+" t_end="+STOP+" t_step="+STEPS+"");
 
 File.append("Imported Dataset to FIJI at " + getTimeString(), LOGPATH);
 
 // Determine which Camera is in use & setup appropriately
 // Can't find Camera Name with Bioformats library so it has already been found with commandline tool as CAMERA
 if (CAMERA=="Prime95B")  {
-    //Prime95B Camera detected
     File.append("Using Prime95B values for Camera Setup!", LOGPATH);
+    //if (isNaN(PIXELWIDTH)) PIXELWIDTH=110;  // default assumes 100x lens and normal camera pixel size
     run("Camera setup", "readoutnoise=1.8 offset=170.0 quantumefficiency=0.9 isemgain=false photons2adu=2.44 pixelsize=["+PIXELWIDTH+"]");
 } else  if (CAMERA=="Andor_iXon_Ultra"){
-    PIXELWIDTH=107.8;
     File.append("Using Andor iXon Ultra values for Camera Setup!", LOGPATH);
+    if (isNaN(PIXELWIDTH)) PIXELWIDTH=130;  // default assumes 100x lens and normal camera pixel size
     run("Camera setup", "readoutnoise=0.0 offset=16.0 quantumefficiency=1.0 isemgain=true photons2adu=5.1 gainem=200.0 pixelsize=["+PIXELWIDTH+"]");
-    // not at all convinced by the value of 5.1 photons2adu!!  Nor the 110nm pixels as the camera has 16um pixels.
+} else  if (CAMERA=="pco_camera"){
+    File.append("Using pco_camera values for Camera Setup!", LOGPATH);
+    if (isNaN(PIXELWIDTH)) PIXELWIDTH=65;  // default assumes 100x lens and normal camera pixel size
+    run("Camera setup", "readoutnoise=2.1 offset=126 quantumefficiency=0.80 isemgain=false photons2adu=1 pixelsize=["+PIXELWIDTH+"]");
+} else  if (CAMERA=="Andor_sCMOS_Camera"){
+    File.append("Using Andor_sCMOS_Camera values for Camera Setup!", LOGPATH);
+    if (isNaN(PIXELWIDTH)) PIXELWIDTH=65;  // default assumes 100x lens and normal camera pixel size
+    run("Camera setup", "readoutnoise=1.8 offset=170.0 quantumefficiency=0.9 isemgain=false photons2adu=2.44 pixelsize=["+PIXELWIDTH+"]");
+} else  if (CAMERA=="Grasshopper3_GS3-U3-23S6M"){
+    File.append("Using Grasshopper3_GS3-U3-23S6M values for Camera Setup!", LOGPATH);
+    if (isNaN(PIXELWIDTH)) PIXELWIDTH=58.6;  // default assumes 100x lens and normal camera pixel size
+    run("Camera setup", "readoutnoise=6.1 offset=9 quantumefficiency=0.76 isemgain=false photons2adu=1 pixelsize=["+PIXELWIDTH+"]");
 } else {
-    // Assume it must be an Andor
+    // Assume it must be an Orca flash 4
     File.append("Using Orca values for Camera Setup!", LOGPATH);
+    if (isNaN(PIXELWIDTH)) PIXELWIDTH=65;
     run("Camera setup", "readoutnoise=1.5 offset=350.0 quantumefficiency=0.9 isemgain=false photons2adu=0.5 pixelsize=["+PIXELWIDTH+"]");
 }
 
@@ -129,12 +140,12 @@ File.append("...",LOGPATH);
 File.close(logf);
 
 // Now write a config file N.B. Must be after closing log file or File.open() fails!!
-CONFPATH = WORK + "/" + JOBNO  + "/tmp_conf_" + NAME + "_" + BLOCK + ".txt";
+CONFPATH = WORK + "/tmp_conf_" + NAME + "_" + START + ".txt";
 if (File.exists(CONFPATH))  {
     File.delete(CONFPATH);
 }
 conff = File.open(CONFPATH);
-LINE = toString(FIRST)+":"+LAST+":"+PIXELWIDTH+":"+sizeX+":"+sizeY+":";
+LINE = toString(START)+":"+END+":"+PIXELWIDTH+":"+sizeX+":"+sizeY+":";
 File.append(LINE, CONFPATH);
 File.close(conff);
 
