@@ -26,10 +26,10 @@ class Pipeline:
         return
 
     def validate_working_directories(self):
-        working_directory = self.engine.get_file_system().get_working_directory()
+        working_directory = self._engine.get_file_system().get_working_directory()
 
         files = []
-        for file in next(os.walk(self.engine.get_file_system().get_source_directory()))[2]:
+        for file in next(os.walk(self._engine.get_file_system().get_source_directory()))[2]:
             if file.endswith(".ome.tif") or file.endswith(".ome.tiff"):
                 files.append(file)
 
