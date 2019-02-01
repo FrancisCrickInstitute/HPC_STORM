@@ -152,7 +152,7 @@ class PipelineStep:
 
 class CameraGatherer(PipelineStep):
     def __init__(self, pipeline):
-        super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "macros", "CameraGatherer.sh"), pipeline)
+        super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "runnables", "CameraGatherer.sh"), pipeline)
 
     def do_before(self, engine):
         self.parameter_string += " -c=" + self.get_pipeline().get_camera()
@@ -166,7 +166,7 @@ class CameraGatherer(PipelineStep):
 
 class TiffSizeCalculator(PipelineStep):
     def __init__(self, pipeline):
-        super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "macros", "TiffSizeCalculator.sh"), pipeline)
+        super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "runnables", "TiffSizeCalculator.sh"), pipeline)
 
     def map_arguments(self, engine, batch_number):
         self.parameter_string += " -f=" + self.get_pipeline().get_files()[batch_number]
@@ -196,7 +196,7 @@ class TiffSizeCalculator(PipelineStep):
 
 class LocalisationRunner(PipelineStep):
     def __init__(self, pipeline):
-        super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "macros", "RunLocalisation.sh"), pipeline)
+        super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "runnables", "RunLocalisation.sh"), pipeline)
 
     def do_before(self, engine):
         self.parameter_string += " -c=" + self.get_pipeline().get_plugins_directory()
