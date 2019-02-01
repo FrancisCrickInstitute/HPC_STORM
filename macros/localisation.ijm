@@ -26,6 +26,8 @@ logf = File.open(LOGPATH);
 
 File.append(ARGS,LOGPATH);
 
+File.append(getDirectory("plugins"), LOGPATH);
+
 File.append("Opened log file at " + getTimeString(), LOGPATH);
 File.append("ImageJ version " + getVersion(), LOGPATH);
 
