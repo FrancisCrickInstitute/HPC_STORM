@@ -31,7 +31,7 @@ case ${i} in
     shift
     ;;
 
-    -stop=*)
+    -end=*)
     STOP="${i#*=}"
     shift
     ;;
@@ -58,6 +58,7 @@ ml Fiji/1.52d-foss-2016b
 ml load Tigervnc/1.9.0
 module load X11/20160819-foss-2016b
 export DISPLAY=`vncserver 2>&1 | grep -oP '(?<=desktop is ).*'`
+echo "Display acquired: ${DISPLAY}"
 
 source ${WORKING_DIRECTORY}/environmental_vars.sh
 
