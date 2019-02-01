@@ -217,7 +217,7 @@ class LocalisationRunner(PipelineStep):
 
         if start_index == step_size:
             file_counter += 1
-            self.get_pipeline().set_file_counter(file_counter)
+            self.get_pipeline().set_file_index(file_counter)
             self.get_pipeline().set_batch_counter(0)
         else:
             self.get_pipeline().set_batch_counter(start_index)
