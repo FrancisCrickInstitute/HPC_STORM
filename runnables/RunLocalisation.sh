@@ -56,7 +56,7 @@ done
 
 module load Fiji/1.52d-foss-2016b
 module load Tigervnc/1.9.0
-module load X11/20160819-foss-2016b
+#module load X11/20160819-foss-2016b
 export DISPLAY=`vncserver 2>&1 | grep -oP '(?<=desktop is ).*'`
 echo "Display acquired: ${DISPLAY}"
 vncserver
@@ -66,7 +66,7 @@ source ${WORKING_DIRECTORY}/environmental_vars.sh
 echo "copying file to local storage"
 mkdir ${TMPDIR}/${SLURM_JOB_ID}
 TMP_FILE="${TMPDIR}/${SLURM_JOB_ID}/$(basename ${FILE})"
-cp ${FILE} TMP_FILE
+cp ${FILE} ${TMP_FILE}
 
 echo "Running localisation script with parameters: "
 ImageJ-linux64 -Dij1.plugin.dirs=${CUSTOM_PLUGINS_PATH}/.plugins --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
