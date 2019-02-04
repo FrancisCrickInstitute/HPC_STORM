@@ -54,9 +54,8 @@ case ${i} in
 esac
 done
 
-ml use /camp/apps/eb/dev/modules/all
-module load ImageJ/1.51p
-ml load Tigervnc/1.9.0
+module load Fiji/1.52d-foss-2016b
+module load Tigervnc/1.9.0
 module load X11/20160819-foss-2016b
 export DISPLAY=`vncserver 2>&1 | grep -oP '(?<=desktop is ).*'`
 echo "Display acquired: ${DISPLAY}"
