@@ -63,8 +63,13 @@ vncserver
 
 source ${WORKING_DIRECTORY}/environmental_vars.sh
 
+echo "copying file to local storage"
+mkdir ${TMPDIR}/${SLURM_JOB_ID}
+TMP_FILE="${TMPDIR}/${SLURM_JOB_ID}/$(basename ${FILE})"
+cp ${FILE} TMP_FILE
+
 echo "Running localisation script with parameters: "
-ImageJ-linux64 -Dij1.plugin.dirs=${CUSTOM_PLUGINS_PATH}/.plugins --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
+ImageJ-linux64 -Dij1.plugin.dirs=${CUSTOM_PLUGINS_PATH}/.plugins --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
 
 echo "Finishing Localization time $(date)"
 
