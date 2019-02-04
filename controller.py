@@ -55,6 +55,11 @@ class Pipeline:
 
             if "plugins_directory" in raw_parameters:
                 self.plugins_directory = raw_parameters["plugins_directory"]
+
+                if not os.path.isdir(os.path.join(self.plugins_directory, ".plugins")):
+                    self._engine.error("The plugins path in the parameters file must point to a directory CONTAINING a folder named .plugins - this is an ImageJ bug.")
+                    return False
+
             else:
                 self._engine.error("Your parameters file must contain a value for plugins_director pointing to the folder containing the ThunderSTORM ImageJ plugin")
                 return False

@@ -54,16 +54,18 @@ case ${i} in
 esac
 done
 
-ml Fiji/1.52d-foss-2016b
+ml use /camp/apps/eb/dev/modules/all
+module load ImageJ/1.51p
 ml load Tigervnc/1.9.0
 module load X11/20160819-foss-2016b
 export DISPLAY=`vncserver 2>&1 | grep -oP '(?<=desktop is ).*'`
 echo "Display acquired: ${DISPLAY}"
+vncserver
 
 source ${WORKING_DIRECTORY}/environmental_vars.sh
 
 echo "Running localisation script with parameters: "
-ImageJ-linux64 -Dij1.plugin.dirs=${HOME}/.plugins --allow-multiple --no-splash -batch ${SCRIPT} ${WORKING_DIRECTORY}:${FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
+ImageJ-linux64 -Dij1.plugin.dirs=${CUSTOM_PLUGINS_PATH}/.plugins --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
 
 echo "Finishing Localization time $(date)"
 
