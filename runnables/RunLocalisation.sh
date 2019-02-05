@@ -69,7 +69,7 @@ source ${WORKING_DIRECTORY}/environmental_vars.sh
 
 echo "copying file to local storage"
 TMP_DIR=${TMPDIR}/${SLURM_JOB_ID}
-mkdir
+mkdir ${TMP_DIR}
 TMP_FILE="${TMP_DIR}/$(basename ${FILE})"
 cp ${FILE} ${TMP_FILE}
 
