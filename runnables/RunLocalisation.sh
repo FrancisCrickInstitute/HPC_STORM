@@ -60,7 +60,7 @@ module load Tigervnc/1.9.0
 #export DISPLAY=`vncserver 2>&1 | grep -oP '(?<=desktop is ).*'`
 #echo "Display acquired: ${DISPLAY}"
 #vncserver
-vncstart
+DISPLAY=$(vncstart)
 
 source ${WORKING_DIRECTORY}/environmental_vars.sh
 
