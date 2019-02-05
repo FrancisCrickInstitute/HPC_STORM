@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 echo "Start Localization time $(date) with Job ID: ${SLURM_JOB_ID}"
 
