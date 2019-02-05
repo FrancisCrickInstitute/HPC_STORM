@@ -62,6 +62,7 @@ module load Tigervnc/1.9.0
 #echo "Display acquired: ${DISPLAY}"
 #vncserver
 DISPLAY=$(vncstart)
+export DISPLAY=${DISPLAY}
 echo "Display is: ${DISPLAY}"
 
 source ${WORKING_DIRECTORY}/environmental_vars.sh
