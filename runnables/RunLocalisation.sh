@@ -74,7 +74,7 @@ TMP_FILE="${TMP_DIR}/$(basename ${FILE})"
 cp ${FILE} ${TMP_FILE}
 
 echo "Running localisation script with parameters: ImageJ-linux64 -Dij1.plugin.dirs=${CUSTOM_PLUGINS_PATH}/.plugins --ij2 --allow-multiple --no-splash -port0 -macro ${SCRIPT} ${WORKING_DIRECTORY}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}"
-ImageJ-linux64 -Dij1.plugin.dirs=${CUSTOM_PLUGINS_PATH}/.plugins --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
+ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH}/.plugins --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
 #xvfb-run -d ImageJ-linux64 -Dij1.plugin.dirs=${CUSTOM_PLUGINS_PATH}/.plugins --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
 
 echo "Finishing Localization time $(date)"
