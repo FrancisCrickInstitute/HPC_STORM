@@ -1,4 +1,8 @@
 ARGS=getArgument();
+
+// Force user interaction to confirm display presence
+Dialog.show()
+
 print(ARGS);
 setBatchMode(true);
 parts=split(ARGS, ":");
