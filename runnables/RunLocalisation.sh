@@ -52,7 +52,7 @@ case ${i} in
     shift
     ;;
 
-    -target_folder=)
+    -target_folder=*)
     OUTPUT="${i#*=}"
     shift
     ;;
