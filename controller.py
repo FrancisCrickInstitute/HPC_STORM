@@ -234,9 +234,14 @@ class LocalisationRunner(PipelineStep):
         parameter_string += " -start=" + str(start_index)
         parameter_string += " -step=" + str(step_size)
         parameter_string += " -end=" + str(end_index)
-        parameter_string += " -o=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
+        parameter_string += " -out=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
 
         return parameter_string
+
+
+class CSVMerger(PipelineStep):
+    def __init__(self, pipeline):
+        super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "runnables", "CSVMerger.sh"), pipeline)
 
 
 def execute_pipeline(engine):
