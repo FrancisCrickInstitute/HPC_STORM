@@ -60,7 +60,8 @@ case ${i} in
 esac
 done
 
-module load Fiji/1.51
+#module load Fiji/1.51
+module load bio/Fiji/Custom-ThunderSTORM
 module load Tigervnc/1.9.0
 #module load X11/20160819-foss-2016b
 #export DISPLAY=`vncserver 2>&1 | grep -oP '(?<=desktop is ).*'`

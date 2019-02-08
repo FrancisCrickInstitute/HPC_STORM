@@ -28,4 +28,4 @@ ml LibTIFF/4.0.4-foss-2016b
 tiffinfo ${FILE} | grep Frame | sed 's/^.*"Frame":// ; s/,".*$//' | sort -rn | head -n 1 > ${TARGET}
 
 # Make the output directories for our files
-mkdirs ${WORKING}
+mkdir ${WORKING}

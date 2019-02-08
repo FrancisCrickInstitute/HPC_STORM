@@ -174,7 +174,7 @@ class TiffSizeCalculator(PipelineStep):
         filename = os.path.basename(file).replace(".ome.tiff", "").replace(".ome.tif", "")
 
         self.parameter_string += " -f=" + file
-        self.parameter_string += " -o=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
+        self.parameter_string += " -w=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
         self.parameter_string += " -t=" + os.path.join(engine.get_file_system().get_working_directory(), filename + "_count.txt")
         return self.parameter_string
 
