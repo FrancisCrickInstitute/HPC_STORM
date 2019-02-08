@@ -170,8 +170,12 @@ class TiffSizeCalculator(PipelineStep):
         super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "runnables", "TiffSizeCalculator.sh"), pipeline)
 
     def map_arguments(self, engine, batch_number):
-        self.parameter_string += " -f=" + self.get_pipeline().get_files()[batch_number]
-        self.parameter_string += " -t=" + os.path.join(engine.get_file_system().get_working_directory(), os.path.basename(self.get_pipeline().get_files()[batch_number]).replace(".ome.tiff", "_count.txt").replace(".ome.tif", "_count.txt"))
+        file = self.get_pipeline().get_files()[batch_number]
+        filename = os.path.basename(file).replace(".ome.tiff", "").replace(".ome.tif", "")
+
+        self.parameter_string += " -f=" + file
+        self.parameter_string += " -o=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
+        self.parameter_string += " -t=" + os.path.join(engine.get_file_system().get_working_directory(), filename + "_count.txt")
         return self.parameter_string
 
     def do_after(self, engine):
@@ -212,6 +216,7 @@ class LocalisationRunner(PipelineStep):
     def map_arguments(self, engine, batch_number):
         file_counter = self.get_pipeline().get_file_index()
         file = self.get_pipeline().get_files()[file_counter]
+        filename = os.path.basename(file).replace(".ome.tiff", "").replace(".ome.tif", "")
 
         start_index = self.get_pipeline().get_batch_counter() + 1
         step_size = self.get_pipeline().get_batching_map_value(file)
@@ -229,6 +234,7 @@ class LocalisationRunner(PipelineStep):
         parameter_string += " -start=" + str(start_index)
         parameter_string += " -step=" + str(step_size)
         parameter_string += " -end=" + str(end_index)
+        parameter_string += " -o=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
 
         return parameter_string
 

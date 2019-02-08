@@ -52,6 +52,11 @@ case ${i} in
     shift
     ;;
 
+    -o=)
+    OUTPUT="${i#*=}"
+    shift
+    ;;
+
 esac
 done
 
@@ -67,14 +72,17 @@ echo "Display is: ${DISPLAY}"
 
 source ${WORKING_DIRECTORY}/environmental_vars.sh
 
+# Create our node local setip
 echo "copying file to local storage"
 TMP_DIR=${TMPDIR}/${SLURM_JOB_ID}
 mkdir ${TMP_DIR}
 TMP_FILE="${TMP_DIR}/$(basename ${FILE})"
 cp ${FILE} ${TMP_FILE}
 
+# Create our output locations
+
 echo "Running localisation script with parameters: ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}"
-ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
+ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
 #xvfb-run -d ImageJ-linux64 -Dij1.plugin.dirs=${CUSTOM_PLUGINS_PATH}/.plugins --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
 
 echo "Finishing Localization time $(date)"

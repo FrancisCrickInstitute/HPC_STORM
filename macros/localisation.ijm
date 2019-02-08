@@ -13,12 +13,13 @@ THREED=parts[5];
 CAMERA=parts[6];
 CALIB=parts[7];
 
+// Retrieve the file name without file suffixes
 fullname=split(FNAME, ".");
 fullname=split(fullname[0], "/");
 NAME=fullname[fullname.length - 1];
 
-LOGPATH = WORK + "/tmp_" + NAME + "_" + START + ".log";
-
+// Ensure the current execution is the only log
+LOGPATH = WORK + "/" + START + ".log";
 if (File.exists(LOGPATH))  {
     File.delete(LOGPATH);
 }
@@ -34,10 +35,10 @@ File.append("ImageJ version " + getVersion(), LOGPATH);
 
 // TODO: Switch to node dir?
 if (START == "1")  {
-    OUTPATH = WORK + "/tmp_" + NAME + "_slice_1.csv";
+    OUTPATH = WORK + "/slice_1.csv";
     SAVEPROTOCOL = "true";
 } else {
-    OUTPATH = WORK + "/tmp_" + NAME + "_slice_" + START + ".csv";
+    OUTPATH = WORK + "/slice_" + START + ".csv";
     SAVEPROTOCOL = "false";
 }
 
@@ -150,7 +151,7 @@ File.append("...", LOGPATH);
 File.close(logf);
 
 // Now write a config file N.B. Must be after closing log file or File.open() fails!!
-CONFPATH = WORK + "/tmp_conf_" + NAME + "_" + START + ".txt";
+CONFPATH = WORK + "/conf_" + START + ".txt";
 if (File.exists(CONFPATH))  {
     File.delete(CONFPATH);
 }
