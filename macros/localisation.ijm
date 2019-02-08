@@ -131,16 +131,20 @@ File.append("Finished Localization at " + getTimeString(), LOGPATH);
 
 File.append("Exporting localisations to " + OUTPATH, LOGPATH);
 
+Dialog.show()
+
 if(THREED==0) {
     run("Export results", "floatprecision=2 filepath=["+OUTPATH+"] fileformat=[CSV (comma separated)] id=true frame=true sigma=true bkgstd=true intensity=true saveprotocol=["+SAVEPROTOCOL+"] offset=true uncertainty=true y=true x=true");
 } else {
     run("Export results", "floatprecision=2 filepath=["+OUTPATH+"] fileformat=[CSV (comma separated)] chi2=true offset=true saveprotocol=["+SAVEPROTOCOL+"] bkgstd=true uncertainty_xy=true intensity=true x=true sigma2=true uncertainty_z=true y=true sigma1=true z=true id=true frame=true");
 }
 
+Dialog.show()
+
 close();
 
-File.append("Exported CSV result at " + getTimeString(),LOGPATH);
-File.append("...",LOGPATH);
+File.append("Exported CSV result at " + getTimeString(), LOGPATH);
+File.append("...", LOGPATH);
 File.close(logf);
 
 // Now write a config file N.B. Must be after closing log file or File.open() fails!!
