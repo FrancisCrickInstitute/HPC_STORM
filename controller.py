@@ -234,7 +234,7 @@ class LocalisationRunner(PipelineStep):
         parameter_string += " -start=" + str(start_index)
         parameter_string += " -step=" + str(step_size)
         parameter_string += " -end=" + str(end_index)
-        parameter_string += " -out=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
+        parameter_string += " -target_folder=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
 
         return parameter_string
 
