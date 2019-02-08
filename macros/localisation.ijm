@@ -131,6 +131,7 @@ File.append("Finished Localization at " + getTimeString(), LOGPATH);
 
 File.append("Exporting localisations to " + OUTPATH, LOGPATH);
 
+Dialog.create("BEFORE OUTPUT");
 Dialog.show()
 
 if(THREED==0) {
@@ -139,6 +140,7 @@ if(THREED==0) {
     run("Export results", "floatprecision=2 filepath=["+OUTPATH+"] fileformat=[CSV (comma separated)] chi2=true offset=true saveprotocol=["+SAVEPROTOCOL+"] bkgstd=true uncertainty_xy=true intensity=true x=true sigma2=true uncertainty_z=true y=true sigma1=true z=true id=true frame=true");
 }
 
+Dialg.create("AFTER OUTPUT");
 Dialog.show()
 
 close();
