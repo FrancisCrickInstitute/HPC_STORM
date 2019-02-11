@@ -138,7 +138,7 @@ class Pipeline:
         return self.calibration
 
     def get_post_processing_type(self):
-        return self.get_post_processing_type
+        return self.post_processing_type
 
     def get_lateral_uncertainty(self):
         return self.lateral_uncertainty
