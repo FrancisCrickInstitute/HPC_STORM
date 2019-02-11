@@ -14,6 +14,8 @@ class Pipeline:
     plugins_directory = ""
     threed = 0
     calibration = ""
+    post_processing_type = ""
+    lateral_uncertainty = 0
 
     size_map = dict()
     batch_map = dict()
@@ -67,6 +69,16 @@ class Pipeline:
                     self.threed = 0
             else:
                 self.threed = 0
+
+            if "post_processing_type" in raw_parameters:
+                self.post_processing_type = raw_parameters["post_processing_type"]
+            else:
+                self.post_processing_type="DRIFT"
+
+            if "lateral_uncertainty" in raw_parameters:
+                self.lateral_uncertainty = raw_parameters["lateral_uncertainty"]
+            else:
+                self.lateral_uncertainty = 20
 
             if "calibration_file" in raw_parameters:
                 self.calibration = raw_parameters["calibration_file"]
@@ -124,6 +136,12 @@ class Pipeline:
 
     def get_calibration(self):
         return self.calibration
+
+    def get_post_processing_type(self):
+        return self.get_post_processing_type
+
+    def get_lateral_uncertainty(self):
+        return self.lateral_uncertainty
 
 
 class PipelineStep:
@@ -243,6 +261,27 @@ class CSVMerger(PipelineStep):
     def __init__(self, pipeline):
         super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "runnables", "CSVMerger.sh"), pipeline)
 
+    def do_before(self, engine):
+        self.parameter_string += " -c=" + self.get_pipeline().get_plugins_directory()
+        self.parameter_string += " -s=" + os.path.join(os.path.dirname(os.path.realpath(__file__)), "macros", "post_process.ijm")
+        self.parameter_string += " -threed=" + str(self.get_pipeline().get_threed())
+        self.parameter_string += " -type=" + self.get_pipeline().get_post_processing_type()
+        self.parameter_string += " -lateral=" + str(self.get_pipeline().get_lateral_uncertainty())
+
+        calib = self.get_pipeline().get_calibration()
+        if calib != "":
+            self.parameter_string += " -calibration=" + calib
+
+    def map_arguments(self, engine, batch_number):
+        file = self.get_pipeline().get_files()[batch_number]
+        filename = os.path.basename(file).replace(".ome.tiff", "").replace(".ome.tif", "")
+
+        parameter_string = self.parameter_string
+        parameter_string += " -f=" + file
+        parameter_string += " -target_folder=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
+
+        return parameter_string
+
 
 def execute_pipeline(engine):
     engine.info("Welcome to the STORM processing pipeline.")
@@ -264,5 +303,10 @@ def execute_pipeline(engine):
     # Loop through our fov's and perform thunderstorm on each
     if not engine.submit_chunk_and_wait_for_execution(pipeline.get_total_batches(), pipeline.max_concurrent_jobs, LocalisationRunner(pipeline)):
         engine.error("Failed to execute the STORM runner.")
+        return False
+
+    # Loop through our files
+    if not engine.submit_chunk_and_wait_for_execution(len(pipeline.files), pipeline.max_concurrent_jobs, CSVMerger(pipeline)):
+        engine.error("Failed to execute post processing")
         return False
 
