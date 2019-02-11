@@ -60,6 +60,7 @@ echo "copying file to local storage"
 TMP_DIR=${TMPDIR}/${SLURM_JOB_ID}
 mkdir ${TMP_DIR}
 NAME=$(basename ${FILE})
+NAME="${NAME%.*}"
 
 echo "merging all the localisation log files"
 export LOGFILE=${WORKING_DIRECTORY}/temp_localisation.log
@@ -96,7 +97,6 @@ echo "stopping vnc!"
 vncserver -kill ${DISPLAY}
 rm -r ${TMP_DIR}
 
-NAME="${NAME%.*}"
 LOC_AFTER=`wc -l ${WORKING_DIRECTORY}/${NAME}.csv | awk '{print $1-1}'`
 echo "${LOC_AFTER} localisations found after filtering" >> ${LOGFILE}
 
