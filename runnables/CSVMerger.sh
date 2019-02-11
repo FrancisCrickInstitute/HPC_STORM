@@ -60,7 +60,7 @@ echo "copying file to local storage"
 TMP_DIR=${TMPDIR}/${SLURM_JOB_ID}
 mkdir ${TMP_DIR}
 NAME=$(basename ${FILE})
-NAME="${NAME%.*}"
+NAME="${NAME%%.*}"
 
 echo "merging all the localisation log files"
 export LOGFILE=${WORKING_DIRECTORY}/temp_localisation.log
