@@ -93,12 +93,14 @@ ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-spla
 # Copy raw csv file back to Work directory
 cp ${TMP_DIR}/merged_sorted.csv ${WORKING_DIRECTORY}/merged_sorted.csv
 
+LOC_AFTER=`wc -l ${WORKING_DIRECTORY}/${NAME}.csv | awk '{print $1-1}'`
+echo "${LOC_AFTER} localisations found after filtering" >> ${LOGFILE}
+
 echo "stopping vnc!"
 vncserver -kill ${DISPLAY}
 rm -r ${TMP_DIR}
-
-LOC_AFTER=`wc -l ${WORKING_DIRECTORY}/${NAME}.csv | awk '{print $1-1}'`
-echo "${LOC_AFTER} localisations found after filtering" >> ${LOGFILE}
+rm ${WORKING_DIRECTORY}/conf*txt
+rm ${WORKING_DIRECTORY}/slice*.csv
 
 exit
 
