@@ -65,8 +65,8 @@ cp ${FILE} ${TMP_FILE}
 
 echo "merging all the localisation log files"
 export LOGFILE=${WORKING_DIRECTORY}/temp_localisation.log
-cat ${WORKING_DIRECTORY}/tmp*.log  > ${LOGFILE}
-rm  ${WORKING_DIRECTORY}/tmp*.log
+cat ${WORKING_DIRECTORY}/*.log  > ${LOGFILE}
+rm  ${WORKING_DIRECTORY}/*.log
 
 echo "Start Merging time $(date)" >> ${LOGFILE}
 head -1 ${WORKING_DIRECTORY}/slice_1.csv > ${TMP_DIR}/merged.csv
