@@ -60,8 +60,6 @@ echo "copying file to local storage"
 TMP_DIR=${TMPDIR}/${SLURM_JOB_ID}
 mkdir ${TMP_DIR}
 NAME=$(basename ${FILE})
-TMP_FILE="${TMP_DIR}/${NAME}"
-cp ${FILE} ${TMP_FILE}
 
 echo "merging all the localisation log files"
 export LOGFILE=${WORKING_DIRECTORY}/temp_localisation.log
@@ -89,7 +87,7 @@ echo "running TSTORM_loc_post_macro!"
 
 # run ThunderSTORM
 source ${OUTPUT}/environmental_vars.sh
-ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${TMP_FILE}:${OUTPUT}/${WORKING_DIRECTORY}/merged_sorted.csv:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}:${TYPE}:${LATERAL}
+ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${NAME}:${TMP_DIR}/merged_sorted.csv:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}:${TYPE}:${LATERAL}
 
 # Copy raw csv file back to Work directory
 cp ${TMP_DIR}/merged_sorted.csv ${WORKING_DIRECTORY}/merged_sorted.csv

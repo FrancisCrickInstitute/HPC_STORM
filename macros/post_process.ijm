@@ -5,17 +5,13 @@ parts=split(ARGS, ":");
 
 // Args parsing
 WORK=parts[0];
-FNAME=parts[1];
+NAME=parts[1];
 CSV=parts[2];
 THREED=parts[3];
 CAMERA=parts[4];
 CALIB=parts[5];
 POST=parts[6];
 LATERAL_RES=parts[7];
-
-// Get the file name
-fullname=split(FNAME, ".");
-NAME=fullname[0];
 
 // Gather our conf stuff - TODO: Can we delete the other confs?
 CONF=File.openAsString(WORK + "/conf_1.txt");
