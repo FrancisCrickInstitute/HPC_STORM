@@ -71,9 +71,9 @@ rm  ${WORKING_DIRECTORY}/*.log
 echo "Start Merging time $(date)" >> ${LOGFILE}
 head -1 ${WORKING_DIRECTORY}/slice_1.csv > ${TMP_DIR}/merged.csv
 tail -n +2 -q ${WORKING_DIRECTORY}/slice_*.csv >> ${TMP_DIR}/merged.csv
-sort -t ',' -k2n,2 -k1n,1 ${WORKING_DIRECTORY}/merged.csv > ${TMP_DIR}/merged_sorted.csv
+sort -t ',' -k2n,2 -k1n,1 ${TMP_DIR}/merged.csv > ${TMP_DIR}/merged_sorted.csv
 
-LOC_BEFORE=`wc -l ${OUTPUT}/${NAME}.csv | awk '{print $1-1}'`
+LOC_BEFORE=`wc -l ${TMP_DIR}/merged_sorted.csv | awk '{print $1-1}'`
 echo "${LOC_BEFORE} localisations found after merge" >> ${LOGFILE}
 
 echo "Start Postprocess time $(date)" >> ${LOGFILE}
