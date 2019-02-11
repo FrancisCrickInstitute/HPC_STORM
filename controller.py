@@ -267,6 +267,7 @@ class CSVMerger(PipelineStep):
         self.parameter_string += " -threed=" + str(self.get_pipeline().get_threed())
         self.parameter_string += " -type=" + self.get_pipeline().get_post_processing_type()
         self.parameter_string += " -lateral=" + str(self.get_pipeline().get_lateral_uncertainty())
+        self.parameter_string += " -output=" + engine.get_file_system().get_working_directory()
 
         calib = self.get_pipeline().get_calibration()
         if calib != "":
