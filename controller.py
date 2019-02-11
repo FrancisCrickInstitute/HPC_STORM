@@ -73,7 +73,7 @@ class Pipeline:
             if "post_processing_type" in raw_parameters:
                 self.post_processing_type = raw_parameters["post_processing_type"]
             else:
-                self.post_processing_type="DRIFT"
+                self.post_processing_type = "DRIFT"
 
             if "lateral_uncertainty" in raw_parameters:
                 self.lateral_uncertainty = raw_parameters["lateral_uncertainty"]

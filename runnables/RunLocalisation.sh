@@ -2,6 +2,7 @@
 set -e
 
 echo "Start Localization time $(date) with Job ID: ${SLURM_JOB_ID}"
+echo "Parameters: $@"
 
 for i in "$@"
 do
@@ -61,7 +62,7 @@ esac
 done
 
 #module load Fiji/1.51
-module load bio/Fiji/Custom-ThunderSTORM
+module load fiji/custom-ImageJ-1.51a
 module load Tigervnc/1.9.0
 #module load X11/20160819-foss-2016b
 #export DISPLAY=`vncserver 2>&1 | grep -oP '(?<=desktop is ).*'`

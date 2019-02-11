@@ -79,7 +79,7 @@ echo "${LOC_BEFORE} localisations found after merge" >> ${LOGFILE}
 echo "Start Postprocess time $(date)" >> ${LOGFILE}
 
 ##load application module
-module load bio/Fiji/Custom-ThunderSTORM
+module load fiji/custom-ImageJ-1.51a
 module load Tigervnc/1.9.0
 DISPLAY=$(vncstart)
 export DISPLAY=${DISPLAY}
