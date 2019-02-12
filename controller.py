@@ -35,7 +35,7 @@ class Pipeline:
         for root, dirs, files_list in os.walk(self._engine.get_file_system().get_source_directory()):
             for file in files_list:
                 if file.endswith(".ome.tif") or file.endswith(".ome.tiff"):
-                    files.append(os.path.join(self._engine.get_file_system().get_source_directory(), file))
+                    files.append(os.path.join(root, file))
 
         if len(files) == 0:
             self._engine.error("No valid source files found.")
