@@ -327,3 +327,8 @@ def execute_pipeline(engine):
         engine.error("Failed to execute post processing")
         return False
 
+    # Loop through our files
+    if not engine.submit_chunk_and_wait_for_execution(len(pipeline.files), pipeline.max_concurrent_jobs, Cleanup(pipeline)):
+        engine.error("Failed to execute Cleanup")
+        return False
+
