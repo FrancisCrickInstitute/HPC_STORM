@@ -26,4 +26,5 @@ esac
 done
 
 mv ${INPUT} ${OUTPUT}/.
-mv ${OUTPUT}/slice_1-protocol.txt ${OUTPUT}/localisation-protocol.txt
+mv ${OUTPUT}/slice_1-protocol.txt ${OUTPUT}/pre-post-process-protocol.txt
+mv ${OUTPUT}/${FOLDER}-protocol.txt ${OUTPUT}/post-process-protocol.txt
