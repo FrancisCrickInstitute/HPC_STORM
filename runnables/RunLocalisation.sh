@@ -92,6 +92,7 @@ TMP_DIR=${TMPDIR}/${SLURM_JOB_ID}
 mkdir ${TMP_DIR}
 TMP_FILE="${TMP_DIR}/$(basename ${FILE})"
 cp ${FILE} ${TMP_FILE}
+chmod -R 777 ${TMP_DIR}
 
 # Create our output locations
 
