@@ -31,9 +31,11 @@ class Pipeline:
         working_directory = self._engine.get_file_system().get_working_directory()
 
         files = []
-        for file in next(os.walk(self._engine.get_file_system().get_source_directory()))[2]:
-            if file.endswith(".ome.tif") or file.endswith(".ome.tiff"):
-                files.append(os.path.join(self._engine.get_file_system().get_source_directory(), file))
+        # for file in next(os.walk(self._engine.get_file_system().get_source_directory()))[2]:
+        for root, dirs, files_list in os.walk(self._engine.get_file_system().get_source_directory()):
+            for file in files_list:
+                if file.endswith(".ome.tif") or file.endswith(".ome.tiff"):
+                    files.append(os.path.join(self._engine.get_file_system().get_source_directory(), file))
 
         if len(files) == 0:
             self._engine.error("No valid source files found.")
@@ -78,7 +80,7 @@ class Pipeline:
             if "lateral_uncertainty" in raw_parameters:
                 self.lateral_uncertainty = raw_parameters["lateral_uncertainty"]
             else:
-                self.lateral_uncertainty = 20
+                self.lateral_uncertainty = 50
 
             if "calibration_file" in raw_parameters:
                 self.calibration = raw_parameters["calibration_file"]

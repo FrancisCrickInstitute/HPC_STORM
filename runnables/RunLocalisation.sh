@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -eE
 
 echo "Start Localization time $(date) with Job ID: ${SLURM_JOB_ID}"
 echo "Parameters: $@"
@@ -60,6 +60,18 @@ case ${i} in
 
 esac
 done
+
+cleanup() {
+    if [ ! -z "$DISPLAY" ]; then
+        vncserver -kill ${DISPLAY}
+    fi
+
+    if [ ! -z "$TMP_DIR" ]; then
+        rm -r ${TMP_DIR}
+    fi
+}
+
+trap cleanup 0 1 2 15 EXIT
 
 #module load Fiji/1.51
 module load fiji/custom-ImageJ-1.51a

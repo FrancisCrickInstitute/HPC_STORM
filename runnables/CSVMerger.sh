@@ -55,6 +55,18 @@ case ${i} in
 esac
 done
 
+cleanup() {
+    if [ ! -z "$DISPLAY" ]; then
+        vncserver -kill ${DISPLAY}
+    fi
+
+    if [ ! -z "$TMP_DIR" ]; then
+        rm -r ${TMP_DIR}
+    fi
+}
+
+trap cleanup 0 1 2 15 EXIT
+
 # Create our node local setip
 echo "copying file to local storage"
 TMP_DIR=${TMPDIR}/${SLURM_JOB_ID}
