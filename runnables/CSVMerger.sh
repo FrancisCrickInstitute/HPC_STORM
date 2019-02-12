@@ -56,12 +56,18 @@ esac
 done
 
 cleanup() {
-    if [ ! -z "$DISPLAY" ]; then
+    if [[ ! -z "$DISPLAY" ]]; then
+        echo "stopping vnc!"
         vncserver -kill ${DISPLAY}
     fi
 
-    if [ ! -z "$TMP_DIR" ]; then
+    if [[ ! -z "$TMP_DIR" ]]; then
         rm -r ${TMP_DIR}
+    fi
+
+    if [[ ! -z "$WORKING_DIRECTORY" ]]; then
+        rm ${WORKING_DIRECTORY}/conf*txt
+        rm ${WORKING_DIRECTORY}/slice*.csv
     fi
 }
 
@@ -108,11 +114,11 @@ cp ${TMP_DIR}/merged_sorted.csv ${WORKING_DIRECTORY}/pre-post-processed.csv
 LOC_AFTER=`wc -l ${WORKING_DIRECTORY}/${NAME}.csv | awk '{print $1-1}'`
 echo "${LOC_AFTER} localisations found after filtering" >> ${LOGFILE}
 
-echo "stopping vnc!"
-vncserver -kill ${DISPLAY}
-rm -r ${TMP_DIR}
-rm ${WORKING_DIRECTORY}/conf*txt
-rm ${WORKING_DIRECTORY}/slice*.csv
+#echo "stopping vnc!"
+#vncserver -kill ${DISPLAY}
+#rm -r ${TMP_DIR}
+#rm ${WORKING_DIRECTORY}/conf*txt
+#rm ${WORKING_DIRECTORY}/slice*.csv
 
 exit
 
