@@ -284,6 +284,22 @@ class CSVMerger(PipelineStep):
         return parameter_string
 
 
+class Cleanup(PipelineStep):
+    def __init__(self, pipeline):
+        super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "runnables", "Cleanup.sh"), pipeline)
+
+    def map_arguments(self, engine, batch_number):
+        file = self.get_pipeline().get_files()[batch_number]
+        filename = os.path.basename(file).replace(".ome.tiff", "").replace(".ome.tif", "")
+
+        parameter_string = self.parameter_string
+        parameter_string += " -s=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
+        parameter_string += " -o=" + engine.get_file_system().get_output_directory()
+        parameter_string += " -f=" + filename
+
+        return parameter_string
+
+
 def execute_pipeline(engine):
     engine.info("Welcome to the STORM processing pipeline.")
     pipeline = Pipeline(engine)

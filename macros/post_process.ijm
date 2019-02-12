@@ -20,7 +20,7 @@ PIXELWIDTH=parts[2];
 sizeX=parts[3];
 sizeY=parts[4];
 
-LOGPATH = WORK + "/temp_localisation.log";
+LOGPATH = WORK + "/localisation.log";
 if (File.exists(LOGPATH))  {
     File.append("Adding Merge log!", LOGPATH);
 }
