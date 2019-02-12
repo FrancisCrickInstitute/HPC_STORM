@@ -18,7 +18,7 @@ case ${i} in
     ;;
 
     -f=*)
-    FOLDER="${i#*=}"
+    NAME="${i#*=}"
     shift
     ;;
 
@@ -26,5 +26,6 @@ esac
 done
 
 mv ${INPUT} ${OUTPUT}/.
-mv ${OUTPUT}/slice_1-protocol.txt ${OUTPUT}/pre-post-process-protocol.txt
-mv ${OUTPUT}/${FOLDER}-protocol.txt ${OUTPUT}/post-process-protocol.txt
+FOLDER="${OUTPUT}/${NAME}"
+mv ${FOLDER}/slice_1-protocol.txt ${FOLDER}/pre-post-process-protocol.txt
+mv ${FOLDER}/${NAME}-protocol.txt ${FOLDER}/post-process-protocol.txt
