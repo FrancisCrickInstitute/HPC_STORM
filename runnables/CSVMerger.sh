@@ -52,6 +52,11 @@ case ${i} in
     shift
     ;;
 
+    -scale=*)
+    SCALE_BAR="${i#*=}"
+    shift
+    ;;
+
 esac
 done
 
@@ -106,7 +111,7 @@ echo "running TSTORM_loc_post_macro!"
 
 # run ThunderSTORM
 source ${OUTPUT}/environmental_vars.sh
-ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${NAME}:${TMP_DIR}/merged_sorted.csv:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}:${TYPE}:${LATERAL}
+ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${NAME}:${TMP_DIR}/merged_sorted.csv:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}:${TYPE}:${LATERAL}:${SCALE_BAR}
 
 # Copy raw csv file back to Work directory
 cp ${TMP_DIR}/merged_sorted.csv ${WORKING_DIRECTORY}/pre-post-processed.csv

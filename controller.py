@@ -16,6 +16,7 @@ class Pipeline:
     calibration = ""
     post_processing_type = ""
     lateral_uncertainty = 0
+    scale_bar_enabled = 0
 
     size_map = dict()
     batch_map = dict()
@@ -85,6 +86,17 @@ class Pipeline:
             if "calibration_file" in raw_parameters:
                 self.calibration = raw_parameters["calibration_file"]
 
+            if "scale_bar_enabled" in raw_parameters:
+                tmp = raw_parameters["scale_bar_enabled"]
+                if isinstance(tmp, str) and (tmp == "0" or tmp == "1"):
+                    self.scale_bar_enabled = tmp
+
+                elif isinstance(tmp, bool):
+                    self.scale_bar_enabled = str(int(tmp))
+
+                else:
+                    self.scale_bar_enabled = "0"
+
         else:
             self._engine.error("No parameters file found - this is a requirement to run the pipeline. JSON properties must include a value for the plugins_directory containing the ThunderSTORM plugin.")
             return False
@@ -144,6 +156,9 @@ class Pipeline:
 
     def get_lateral_uncertainty(self):
         return self.lateral_uncertainty
+
+    def get_scale_bar_enabled(self):
+        return self.scale_bar_enabled
 
 
 class PipelineStep:
@@ -270,6 +285,7 @@ class CSVMerger(PipelineStep):
         self.parameter_string += " -type=" + self.get_pipeline().get_post_processing_type()
         self.parameter_string += " -lateral=" + str(self.get_pipeline().get_lateral_uncertainty())
         self.parameter_string += " -output=" + engine.get_file_system().get_working_directory()
+        self.parameter_string += " -scale=" + engine.get_pipeline().get_scale_bar_enabled()
 
         calib = self.get_pipeline().get_calibration()
         if calib != "":

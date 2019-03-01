@@ -12,6 +12,7 @@ CAMERA=parts[4];
 CALIB=parts[5];
 POST=parts[6];
 LATERAL_RES=parts[7];
+SCALE_BAR=parts[8];
 
 // Gather our conf stuff - TODO: Can we delete the other confs?
 CONF=File.openAsString(WORK + "/conf_1.txt");
@@ -63,7 +64,7 @@ if (LATERAL_RES != "0")  {
     }
 
     // find required magnification to get 25nm pixels
-    MAGNIFICATION = toString(parseFloat(PIXELWIDTH)/25);
+    MAGNIFICATION = toString(parseFloat(PIXELWIDTH)/LATERAL_RES);
     File.append("Calculated magnification  = " + MAGNIFICATION, LOGPATH);
 
     // Post_processing
@@ -130,7 +131,9 @@ if (LATERAL_RES != "0")  {
         run("Enhance Contrast...", "saturated=0.35 process_all use"); // lets brightest 0.35% of pixels saturate
         run("16-bit");
 
-        run("Scale Bar...", "width=10 height=24 font=100 color=White background=None location=[Lower Right] bold");
+        if (SCALE_BAR == "1") {
+            run("Scale Bar...", "width=10 height=24 font=100 color=White background=None location=[Lower Right] bold");
+        }
 
         File.append("Exporting visualisation as ome.tiff to " + OUTPATH, LOGPATH);
         run("Bio-Formats Exporter", "save=["+OUTPATH+"] compression=LZW");
@@ -193,7 +196,10 @@ if (LATERAL_RES != "0")  {
         run("RGB Color");
         setBatchMode(false);
 
-        run("Scale Bar...", "width=10 height=24 font=100 color=White background=None location=[Lower Right] bold");
+        if (SCALE_BAR == "1") {
+            run("Scale Bar...", "width=10 height=24 font=100 color=White background=None location=[Lower Right] bold");
+        }
+
         setColor(0xffffff);
         setFont("SansSerif", 100, "bold");
         setJustification("center");
