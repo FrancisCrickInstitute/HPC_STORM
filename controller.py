@@ -10,6 +10,7 @@ class Pipeline:
     max_concurrent_jobs = 0
     target_file_count_per_worker = 100
     files = []
+    linked_files = dict()
     camera = ""
     plugins_directory = ""
     threed = 0
@@ -43,6 +44,20 @@ class Pipeline:
             return False
 
         self.files = files
+
+        # Search for file groups
+        self.linked_files = dict()
+        counter = 0
+        for file in files:
+            root_file = file.replace(".ome.tiff", "").replace(".ome.tif", "")
+
+            similar_files = [file]
+            for file2 in files:
+                if root_file.startswith(root_file):
+                    similar_files.append(file2)
+
+            self.linked_files[counter] = similar_files
+            counter += 1
 
         # Allow optional parameters overriding using configuration file
         parameters_file = os.path.join(working_directory, "parameters.json")
@@ -113,6 +128,9 @@ class Pipeline:
 
     def get_files(self):
         return self.files
+
+    def get_linked_files(self):
+        return self.linked_files
 
     def get_size_map_value(self, file):
         return self.size_map[file]
@@ -211,18 +229,22 @@ class TiffSizeCalculator(PipelineStep):
         super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "runnables", "TiffSizeCalculator.sh"), pipeline)
 
     def map_arguments(self, engine, batch_number):
-        file = self.get_pipeline().get_files()[batch_number]
-        filename = os.path.basename(file).replace(".ome.tiff", "").replace(".ome.tif", "")
+        dependent_files = self.get_pipeline().get_linked_files()[batch_number]
+        filename = os.path.basename(dependent_files[0]).replace(".ome.tiff", "").replace(".ome.tif", "")
 
-        self.parameter_string += " -f=" + file
+        file_string = " -f="
+        for file in dependent_files:
+            file_string = file_string + file + ","
+        self.parameter_string = file_string[:-1]
+
         self.parameter_string += " -w=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
         self.parameter_string += " -t=" + os.path.join(engine.get_file_system().get_working_directory(), filename + "_count.txt")
         return self.parameter_string
 
     def do_after(self, engine):
         # Map files to tiff stack size
-        for file in self.get_pipeline().get_files():
-            source_file = os.path.join(engine.get_file_system().get_working_directory(), os.path.basename(file).replace(".ome.tiff", "_count.txt").replace(".ome.tif", "_count.txt"))
+        for index, files in self.get_pipeline().get_linked_files():
+            source_file = os.path.join(engine.get_file_system().get_working_directory(), os.path.basename(files[0]).replace(".ome.tiff", "_count.txt").replace(".ome.tif", "_count.txt"))
             with open(source_file) as f:
                 value = int(f.readline())
 
@@ -232,8 +254,8 @@ class TiffSizeCalculator(PipelineStep):
                 if rem > 0:
                     div += 1
 
-                self.get_pipeline().save_size_map(file, value)
-                self.get_pipeline().save_batching_map(file, div)
+                self.get_pipeline().save_size_map(index, value)
+                self.get_pipeline().save_batching_map(index, div)
                 self.get_pipeline().update_total_batches(div)
 
         self.get_pipeline().set_file_index(0)
@@ -256,12 +278,12 @@ class LocalisationRunner(PipelineStep):
 
     def map_arguments(self, engine, batch_number):
         file_counter = self.get_pipeline().get_file_index()
-        file = self.get_pipeline().get_files()[file_counter]
+        file = self.get_pipeline().get_linked_files()[file_counter][0]
         filename = os.path.basename(file).replace(".ome.tiff", "").replace(".ome.tif", "")
 
         start_index = self.get_pipeline().get_batch_counter() + 1
-        step_size = self.get_pipeline().get_batching_map_value(file)
-        end_index = self.get_pipeline().get_size_map_value(file) + 1
+        step_size = self.get_pipeline().get_batching_map_value(file_counter)
+        end_index = self.get_pipeline().get_size_map_value(file_counter) + 1
 
         if start_index == step_size:
             file_counter += 1
@@ -299,7 +321,7 @@ class CSVMerger(PipelineStep):
             self.parameter_string += " -calibration=" + calib
 
     def map_arguments(self, engine, batch_number):
-        file = self.get_pipeline().get_files()[batch_number]
+        file = self.get_pipeline().get_linked_files()[batch_number][0]
         filename = os.path.basename(file).replace(".ome.tiff", "").replace(".ome.tif", "")
 
         parameter_string = self.parameter_string
@@ -315,7 +337,7 @@ class Cleanup(PipelineStep):
         super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "runnables", "Cleanup.sh"), pipeline)
 
     def map_arguments(self, engine, batch_number):
-        file = self.get_pipeline().get_files()[batch_number]
+        file = self.get_pipeline().get_linked_files()[batch_number][0]
         filename = os.path.basename(file).replace(".ome.tiff", "").replace(".ome.tif", "")
 
         parameter_string = self.parameter_string
@@ -339,7 +361,7 @@ def execute_pipeline(engine):
         return False
 
     # Calculate tiff stack size for each tiff present
-    if not engine.submit_chunk_and_wait_for_execution(len(pipeline.files), pipeline.max_concurrent_jobs, TiffSizeCalculator(pipeline)):
+    if not engine.submit_chunk_and_wait_for_execution(len(pipeline.linked_files), pipeline.max_concurrent_jobs, TiffSizeCalculator(pipeline)):
         engine.error("Failed to run the tiff stack size calculator")
         return False
 
@@ -349,7 +371,7 @@ def execute_pipeline(engine):
         return False
 
     # Loop through our files
-    if not engine.submit_chunk_and_wait_for_execution(len(pipeline.files), pipeline.max_concurrent_jobs, CSVMerger(pipeline)):
+    if not engine.submit_chunk_and_wait_for_execution(len(pipeline.linked_files), pipeline.max_concurrent_jobs, CSVMerger(pipeline)):
         engine.error("Failed to execute post processing")
         return False
 
