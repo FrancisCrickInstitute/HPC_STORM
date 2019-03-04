@@ -68,6 +68,14 @@ class Pipeline:
             if "threed" in raw_parameters:
                 if raw_parameters["threed"]:
                     self.threed = 1
+
+                    if "calibration_file" in raw_parameters:
+                        self.calibration = raw_parameters["calibration_file"]
+
+                    else:
+                        self._engine.error("A calibration file must be provided for 3d localisation")
+                        return False
+
                 else:
                     self.threed = 0
             else:
@@ -82,9 +90,6 @@ class Pipeline:
                 self.lateral_uncertainty = raw_parameters["lateral_uncertainty"]
             else:
                 self.lateral_uncertainty = 50
-
-            if "calibration_file" in raw_parameters:
-                self.calibration = raw_parameters["calibration_file"]
 
             if "scale_bar_enabled" in raw_parameters:
                 tmp = raw_parameters["scale_bar_enabled"]
