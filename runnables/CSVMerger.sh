@@ -57,6 +57,11 @@ case ${i} in
     shift
     ;;
 
+    -camera=*)
+    CAMERA="${i#*=}"
+    shift
+    ;;
+
 esac
 done
 
@@ -110,7 +115,7 @@ echo "Display is: ${DISPLAY}"
 echo "running TSTORM_loc_post_macro!"
 
 # run ThunderSTORM
-source ${OUTPUT}/environmental_vars.sh
+source ${WORKING_DIRECTORY}/${CAMERA}
 ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${NAME}:${TMP_DIR}/merged_sorted.csv:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}:${TYPE}:${LATERAL}:${SCALE_BAR}
 
 # Copy raw csv file back to Work directory
@@ -118,6 +123,8 @@ cp ${TMP_DIR}/merged_sorted.csv ${WORKING_DIRECTORY}/pre-post-processed.csv
 
 LOC_AFTER=`wc -l ${WORKING_DIRECTORY}/${NAME}.csv | awk '{print $1-1}'`
 echo "${LOC_AFTER} localisations found after filtering" >> ${LOGFILE}
+
+rm ${WORKING_DIRECTORY}/${CAMERA}
 
 #echo "stopping vnc!"
 #vncserver -kill ${DISPLAY}

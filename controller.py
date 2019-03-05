@@ -202,6 +202,7 @@ class CameraGatherer(PipelineStep):
     def map_arguments(self, engine, batch_number):
         # Note this should only be run on one file as we ASSUME that all files use the same camera
         self.parameter_string += " -f=" + self.get_pipeline().get_files()[batch_number]
+        self.parameter_string += " -o=" + self.get_pipeline().get_files()[batch_number].replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
         return self.parameter_string
 
 
@@ -275,6 +276,7 @@ class LocalisationRunner(PipelineStep):
         parameter_string += " -step=" + str(step_size)
         parameter_string += " -end=" + str(end_index)
         parameter_string += " -target_folder=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
+        parameter_string += " -camera=" + file.replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
 
         return parameter_string
 
@@ -303,6 +305,7 @@ class CSVMerger(PipelineStep):
         parameter_string = self.parameter_string
         parameter_string += " -f=" + file
         parameter_string += " -target_folder=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
+        parameter_string += " -camera=" + file.replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
 
         return parameter_string
 
@@ -331,7 +334,7 @@ def execute_pipeline(engine):
         return False
 
     # Assess the camera manufacturer
-    if not engine.submit_and_wait_for_execution(CameraGatherer(pipeline)):
+    if not engine.submit_chunk_and_wait_for_execution(len(pipeline.files), pipeline.max_concurrent_jobs, CameraGatherer(pipeline)):
         engine.error("Failed to assess the detector.")
         return False
 

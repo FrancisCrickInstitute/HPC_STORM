@@ -58,6 +58,11 @@ case ${i} in
     shift
     ;;
 
+    -camera=*)
+    CAMERA="${i#*=}"
+    shift
+    ;;
+
 esac
 done
 
@@ -85,7 +90,7 @@ DISPLAY=$(vncstart)
 export DISPLAY=${DISPLAY}
 echo "Display is: ${DISPLAY}"
 
-source ${WORKING_DIRECTORY}/environmental_vars.sh
+source ${WORKING_DIRECTORY}/${CAMERA}
 
 # Create our node local setip
 echo "copying file to local storage"

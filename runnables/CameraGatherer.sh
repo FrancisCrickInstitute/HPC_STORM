@@ -19,13 +19,18 @@ case ${i} in
     shift
     ;;
 
+    -o=*)
+    OUT="${i#*=}"
+    shift
+    ;;
+
 esac
 done
 
 ml LibTIFF/4.0.4-foss-2016b
 
 # We should use the user provided as cannon
-if [ -z "$CAMERA_RAW" ]; then
+if [[ -z "$CAMERA_RAW" ]]; then
     # Use tiffinfo to assess our detector
     CAMERAstring=$(tiffinfo -0 ${FILE} 2> /dev/null | grep Detector |  sed 's/^.*Detector ID="// ; s/".*$//' | tr " " "_")
     echo "Camera String: ${CAMERAstring}"
@@ -42,4 +47,4 @@ else
 fi
 
 # Store the camera variable
-echo "export CAMERA=${CAMERA}" > ${WORKING_DIRECTORY}/environmental_vars.sh
+echo "export CAMERA=${CAMERA}" > ${WORKING_DIRECTORY}/${OUT}
