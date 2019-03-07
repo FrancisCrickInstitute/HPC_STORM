@@ -31,6 +31,8 @@ ml LibTIFF/4.0.4-foss-2016b
 
 # We should use the user provided as cannon
 if [[ -z "$CAMERA_RAW" ]]; then
+    echo "Attempting to ascertain camera directly"
+
     # Use tiffinfo to assess our detector
     CAMERAstring=$(tiffinfo -0 ${FILE} 2> /dev/null | grep Detector |  sed 's/^.*Detector ID="// ; s/".*$//' | tr " " "_")
     echo "Camera String: ${CAMERAstring}"
@@ -42,9 +44,12 @@ if [[ -z "$CAMERA_RAW" ]]; then
         *Grasshopper3_GS3-U3-23S6M*) CAMERA="Grasshopper3_GS3-U3-23S6M" ;;
         *) CAMERA="Unknown" ;;
     esac
+    echo "CAMERA is: ${CAMERA}"
 else
+    echo "Setting camera to explicit: ${CAMERA_RAW}"
     CAMERA=${CAMERA_RAW}
 fi
 
 # Store the camera variable
+echo "Placing camera props in: ${WORKING_DIRECTORY/${OUT}"
 echo "export CAMERA=${CAMERA}" > ${WORKING_DIRECTORY}/${OUT}
