@@ -12,7 +12,7 @@ case ${i} in
     shift
     ;;
 
-    -c=*)
+    -custom=*)
     CUSTOM_PLUGINS_PATH="${i#*=}"
     shift
     ;;

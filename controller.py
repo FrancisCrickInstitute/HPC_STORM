@@ -268,7 +268,7 @@ class LocalisationRunner(PipelineStep):
 
     def do_before(self, engine):
         self.parameter_string += " -w=" + engine.get_file_system().get_working_directory()
-        self.parameter_string += " -c=" + self.get_pipeline().get_plugins_directory()
+        self.parameter_string += " -custom=" + self.get_pipeline().get_plugins_directory()
         self.parameter_string += " -s=" + os.path.join(os.path.dirname(os.path.realpath(__file__)), "macros", "localisation.ijm")
         self.parameter_string += " -threed=" + str(self.get_pipeline().get_threed())
 
@@ -278,8 +278,9 @@ class LocalisationRunner(PipelineStep):
 
     def map_arguments(self, engine, batch_number):
         file_counter = self.get_pipeline().get_file_index()
-        file = self.get_pipeline().get_linked_files()[file_counter][0]
+        file = self.get_pipeline().get_linked_files()[file_counter][0]  # Only pass on the root stack
         filename = os.path.basename(file).replace(".ome.tiff", "").replace(".ome.tif", "")
+        dependent_files = self.get_pipeline().get_linked_files()[batch_number]
 
         start_index = self.get_pipeline().get_batch_counter() + 1
         step_size = self.get_pipeline().get_batching_map_value(file_counter)
@@ -300,6 +301,11 @@ class LocalisationRunner(PipelineStep):
         parameter_string += " -target_folder=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
         parameter_string += " -camera=" + file.replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
 
+        file_string = " -all_linked_files="
+        for file in dependent_files:
+            file_string = file_string + file + ","
+        parameter_string += file_string[:-1]
+
         return parameter_string
 
 
@@ -308,7 +314,7 @@ class CSVMerger(PipelineStep):
         super().__init__(os.path.join(os.path.dirname(os.path.realpath(__file__)), "runnables", "CSVMerger.sh"), pipeline)
 
     def do_before(self, engine):
-        self.parameter_string += " -c=" + self.get_pipeline().get_plugins_directory()
+        self.parameter_string += " -custom=" + self.get_pipeline().get_plugins_directory()
         self.parameter_string += " -s=" + os.path.join(os.path.dirname(os.path.realpath(__file__)), "macros", "post_process.ijm")
         self.parameter_string += " -threed=" + str(self.get_pipeline().get_threed())
         self.parameter_string += " -type=" + self.get_pipeline().get_post_processing_type()

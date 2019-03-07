@@ -13,7 +13,12 @@ case ${i} in
     shift
     ;;
 
-    -c=*)
+    -all_linked_files=*)
+    FILES="${i#*=}"
+    shift
+    ;;
+
+    -custom=*)
     CUSTOM_PLUGINS_PATH="${i#*=}"
     shift
     ;;
@@ -79,29 +84,36 @@ cleanup() {
 
 trap cleanup 0 1 2 15 EXIT
 
-#module load Fiji/1.51
 module load fiji/custom-ImageJ-1.51a
 module load Tigervnc/1.9.0
-#module load X11/20160819-foss-2016b
-#export DISPLAY=`vncserver 2>&1 | grep -oP '(?<=desktop is ).*'`
-#echo "Display acquired: ${DISPLAY}"
-#vncserver
+
+# Handle our VNC displays
 DISPLAY=$(vncstart)
 export DISPLAY=${DISPLAY}
 echo "Display is: ${DISPLAY}"
 
+# Handle our camera
 source ${WORKING_DIRECTORY}/${CAMERA}
+echo "Camera is ${CAMERA}"
 
-# Create our node local setip
+# Create our temporary directory
 echo "copying file to local storage"
 TMP_DIR=${TMPDIR}/${SLURM_JOB_ID}
 mkdir ${TMP_DIR}
 TMP_FILE="${TMP_DIR}/$(basename ${FILE})"
-cp ${FILE} ${TMP_FILE}
+
+# Copy all files that this worker is likely to access
+OLD_IFS=${IFS}
+IFS=","
+for file in ${FILES}; do
+    cp ${file} ${TMP_DIR}/.
+done
+export IFS=${OLD_IFS}
+
+# Fix all the permissions
 chmod -R 777 ${TMP_DIR}
 
-# Create our output locations
-
+# Run the analysis
 echo "Running localisation script with parameters: ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}"
 ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
 
