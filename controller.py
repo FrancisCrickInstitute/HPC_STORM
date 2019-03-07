@@ -1,4 +1,5 @@
 import os
+import re
 
 import utils
 
@@ -51,9 +52,12 @@ class Pipeline:
         for file in files:
             root_file = file.replace(".ome.tiff", "").replace(".ome.tif", "")
 
+            if re.search(r'_\d+$', root_file):
+                continue
+
             similar_files = [file]
             for file2 in files:
-                if root_file.startswith(root_file):
+                if root_file.startswith(root_file) and root_file != file2:
                     similar_files.append(file2)
 
             self.linked_files[counter] = similar_files
