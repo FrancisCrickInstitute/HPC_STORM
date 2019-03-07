@@ -304,7 +304,7 @@ class LocalisationRunner(PipelineStep):
         parameter_string += " -step=" + str(step_size)
         parameter_string += " -end=" + str(end_index)
         parameter_string += " -target_folder=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
-        parameter_string += " -camera=" + file.replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
+        parameter_string += " -camera=" + os.path.basename(file).replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
 
         file_string = " -all_linked_files="
         for file in dependent_files:
