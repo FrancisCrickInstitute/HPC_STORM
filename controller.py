@@ -57,7 +57,7 @@ class Pipeline:
 
             similar_files = [file]
             for file2 in files:
-                if root_file.startswith(root_file) and root_file != file2:
+                if file2.startswith(root_file) and file != file2:
                     similar_files.append(file2)
 
             self.linked_files[counter] = similar_files
@@ -223,8 +223,8 @@ class CameraGatherer(PipelineStep):
 
     def map_arguments(self, engine, batch_number):
         # Note this should only be run on one file as we ASSUME that all files use the same camera
-        self.parameter_string += " -f=" + self.get_pipeline().get_files()[batch_number]
-        self.parameter_string += " -o=" + self.get_pipeline().get_files()[batch_number].replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
+        self.parameter_string += " -f=" + self.get_pipeline().get_linked_files()[batch_number]
+        self.parameter_string += " -o=" + self.get_pipeline().get_linked_files()[batch_number].replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
         return self.parameter_string
 
 
@@ -366,7 +366,7 @@ def execute_pipeline(engine):
         return False
 
     # Assess the camera manufacturer
-    if not engine.submit_chunk_and_wait_for_execution(len(pipeline.files), pipeline.max_concurrent_jobs, CameraGatherer(pipeline)):
+    if not engine.submit_chunk_and_wait_for_execution(len(pipeline.linked_files), pipeline.max_concurrent_jobs, CameraGatherer(pipeline)):
         engine.error("Failed to assess the detector.")
         return False
 
@@ -386,7 +386,7 @@ def execute_pipeline(engine):
         return False
 
     # Loop through our files
-    if not engine.submit_chunk_and_wait_for_execution(len(pipeline.files), pipeline.max_concurrent_jobs, Cleanup(pipeline)):
+    if not engine.submit_chunk_and_wait_for_execution(len(pipeline.linked_files), pipeline.max_concurrent_jobs, Cleanup(pipeline)):
         engine.error("Failed to execute Cleanup")
         return False
 
