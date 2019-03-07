@@ -51,5 +51,5 @@ else
 fi
 
 # Store the camera variable
-echo "Placing camera props in: ${WORKING_DIRECTORY/${OUT}"
+echo "Placing camera props in: ${WORKING_DIRECTORY}/${OUT}"
 echo "export CAMERA=${CAMERA}" > ${WORKING_DIRECTORY}/${OUT}
