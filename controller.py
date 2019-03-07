@@ -60,6 +60,7 @@ class Pipeline:
                 if file2.startswith(root_file) and file != file2:
                     similar_files.append(file2)
 
+            similar_files.sort()
             self.linked_files[counter] = similar_files
             counter += 1
 
@@ -377,6 +378,7 @@ def execute_pipeline(engine):
         return False
 
     # Loop through our fov's and perform thunderstorm on each
+    engine.info("Calculated batch count at: " + str(pipeline.get_total_batches()))
     if not engine.submit_chunk_and_wait_for_execution(pipeline.get_total_batches(), pipeline.max_concurrent_jobs, LocalisationRunner(pipeline)):
         engine.error("Failed to execute the STORM runner.")
         return False
