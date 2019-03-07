@@ -82,7 +82,7 @@ cleanup() {
     fi
 }
 
-trap cleanup 0 1 2 15 EXIT
+trap cleanup 0 1 2 3 6 15 EXIT
 
 module load fiji/custom-ImageJ-1.51a
 module load Tigervnc/1.9.0

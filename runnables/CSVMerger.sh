@@ -81,7 +81,7 @@ cleanup() {
     fi
 }
 
-trap cleanup 0 1 2 15 EXIT
+trap cleanup 0 1 2 3 6 15 EXIT
 
 # Create our node local setip
 echo "copying file to local storage"
