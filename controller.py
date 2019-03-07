@@ -247,7 +247,8 @@ class TiffSizeCalculator(PipelineStep):
 
     def do_after(self, engine):
         # Map files to tiff stack size
-        for index, files in self.get_pipeline().get_linked_files():
+        for index in self.get_pipeline().get_linked_files():
+            files = self.get_pipeline().get_linked_files()[index]
             source_file = os.path.join(engine.get_file_system().get_working_directory(), os.path.basename(files[0]).replace(".ome.tiff", "_count.txt").replace(".ome.tif", "_count.txt"))
             with open(source_file) as f:
                 value = int(f.readline())
