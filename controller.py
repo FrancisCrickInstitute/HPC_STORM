@@ -223,8 +223,8 @@ class CameraGatherer(PipelineStep):
 
     def map_arguments(self, engine, batch_number):
         # Note this should only be run on one file as we ASSUME that all files use the same camera
-        self.parameter_string += " -f=" + self.get_pipeline().get_linked_files()[batch_number]
-        self.parameter_string += " -o=" + self.get_pipeline().get_linked_files()[batch_number].replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
+        self.parameter_string += " -f=" + self.get_pipeline().get_linked_files()[batch_number][0]
+        self.parameter_string += " -o=" + self.get_pipeline().get_linked_files()[batch_number][0].replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
         return self.parameter_string
 
 
