@@ -286,7 +286,7 @@ class LocalisationRunner(PipelineStep):
         file_counter = self.get_pipeline().get_file_index()
         file = self.get_pipeline().get_linked_files()[file_counter][0]  # Only pass on the root stack
         filename = os.path.basename(file).replace(".ome.tiff", "").replace(".ome.tif", "")
-        dependent_files = self.get_pipeline().get_linked_files()[batch_number]
+        dependent_files = self.get_pipeline().get_linked_files()[file_counter]
 
         start_index = self.get_pipeline().get_batch_counter() + 1
         step_size = self.get_pipeline().get_batching_map_value(file_counter)
