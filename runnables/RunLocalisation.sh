@@ -92,6 +92,10 @@ DISPLAY=$(vncstart)
 export DISPLAY=${DISPLAY}
 echo "Display is: ${DISPLAY}"
 
+# Logging
+data=$(netstat -an | grep ${DISPLAY:1})
+echo ${data}
+
 # Handle our camera
 source ${WORKING_DIRECTORY}/${CAMERA}
 echo "Camera is ${CAMERA}"
