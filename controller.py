@@ -339,7 +339,7 @@ class CSVMerger(PipelineStep):
         parameter_string = self.parameter_string
         parameter_string += " -f=" + file
         parameter_string += " -target_folder=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
-        parameter_string += " -camera=" + file.replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
+        parameter_string += " -camera=" + os.path.basename(file).replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
 
         return parameter_string
 
