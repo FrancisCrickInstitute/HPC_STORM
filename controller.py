@@ -400,3 +400,5 @@ def execute_pipeline(engine):
         engine.error("Failed to execute Cleanup")
         return False
 
+    return True
+
