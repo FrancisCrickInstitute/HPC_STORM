@@ -14,11 +14,6 @@ case ${i} in
     shift
     ;;
 
-    -w=*)
-    WORKING="${i#*=}"
-    shift
-    ;;
-
 esac
 done
 
@@ -39,6 +34,3 @@ done
 export IFS=${OLD_IFS}
 
 echo ${count} > ${TARGET}
-
-# Make the output directories for our files
-mkdir ${WORKING}

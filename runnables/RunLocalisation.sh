@@ -97,7 +97,7 @@ data=$(netstat -an | grep ${DISPLAY:1})
 echo ${data}
 
 # Handle our camera
-source ${WORKING_DIRECTORY}/${CAMERA}
+source ${OUTPUT}/${CAMERA}
 echo "Camera is ${CAMERA}"
 
 # Create our temporary directory

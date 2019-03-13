@@ -9,6 +9,16 @@ case ${i} in
     shift
     ;;
 
+    -target=*)
+    TARGET="${i#*=}"
+    shift
+    ;;
+
+    -name=*)
+    NAME="${i#*=}"
+    shift
+    ;;
+
     -c=*)
     CAMERA_RAW="${i#*=}"
     shift
@@ -26,6 +36,9 @@ case ${i} in
 
 esac
 done
+
+# Build our stack specific working directory
+mkdir ${TARGET}
 
 ml LibTIFF/4.0.4-foss-2016b
 
@@ -51,5 +64,5 @@ else
 fi
 
 # Store the camera variable
-echo "Placing camera props in: ${WORKING_DIRECTORY}/${OUT}"
-echo "export CAMERA=${CAMERA}" > ${WORKING_DIRECTORY}/${OUT}
+echo "Placing camera props in: ${TARGET}/${OUT}"
+echo "export CAMERA=${CAMERA}" > ${TARGET}/${OUT}

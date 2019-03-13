@@ -224,8 +224,15 @@ class CameraGatherer(PipelineStep):
 
     def map_arguments(self, engine, batch_number):
         # Note this should only be run on one file as we ASSUME that all files use the same camera
-        self.parameter_string += " -f=" + self.get_pipeline().get_linked_files()[batch_number][0]
-        self.parameter_string += " -o=" + os.path.basename(self.get_pipeline().get_linked_files()[batch_number][0]).replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
+        dependent_files = self.get_pipeline().get_linked_files()[batch_number]
+        self.parameter_string += " -f=" + dependent_files[0]
+
+        # Not sure if this is used
+        filename = os.path.basename(dependent_files[0]).replace(".ome.tiff", "").replace(".ome.tif", "")
+        self.parameter_string += " -name=" + filename
+
+        self.parameter_string += " -target=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
+        self.parameter_string += " -o=props.sh"
         return self.parameter_string
 
 
@@ -242,15 +249,15 @@ class TiffSizeCalculator(PipelineStep):
             file_string = file_string + file + ","
         self.parameter_string = file_string[:-1]
 
-        self.parameter_string += " -w=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
-        self.parameter_string += " -t=" + os.path.join(engine.get_file_system().get_working_directory(), filename + "_count.txt")
+        self.parameter_string += " -t=" + os.path.join(engine.get_file_system().get_working_directory(), filename, "count.txt")
         return self.parameter_string
 
     def do_after(self, engine):
         # Map files to tiff stack size
         for index in self.get_pipeline().get_linked_files():
             files = self.get_pipeline().get_linked_files()[index]
-            source_file = os.path.join(engine.get_file_system().get_working_directory(), os.path.basename(files[0]).replace(".ome.tiff", "_count.txt").replace(".ome.tif", "_count.txt"))
+            folder = os.path.basename(files[0]).replace(".ome.tiff", "").replace(".ome.tif", "")
+            source_file = os.path.join(engine.get_file_system().get_working_directory(), folder, "count.txt")
             with open(source_file) as f:
                 value = int(f.readline())
 
@@ -305,7 +312,7 @@ class LocalisationRunner(PipelineStep):
         parameter_string += " -step=" + str(step_size)
         parameter_string += " -end=" + str(end_index)
         parameter_string += " -target_folder=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
-        parameter_string += " -camera=" + os.path.basename(file).replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
+        parameter_string += " -camera=props.sh"
 
         file_string = " -all_linked_files="
         for file in dependent_files:
@@ -339,7 +346,7 @@ class CSVMerger(PipelineStep):
         parameter_string = self.parameter_string
         parameter_string += " -f=" + file
         parameter_string += " -target_folder=" + os.path.join(engine.get_file_system().get_working_directory(), filename)
-        parameter_string += " -camera=" + os.path.basename(file).replace(".ome.tiff", "_props.sh").replace(".ome.tif", "_props.sh")
+        parameter_string += " -camera=props.sh"
 
         return parameter_string
 
