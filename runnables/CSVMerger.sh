@@ -116,7 +116,11 @@ echo "running TSTORM_loc_post_macro!"
 
 # run ThunderSTORM
 source ${WORKING_DIRECTORY}/${CAMERA_FILE}
-ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${NAME}:${TMP_DIR}/merged_sorted.csv:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}:${TYPE}:${LATERAL}:${SCALE_BAR}
+if [[ -z ${CUSTOM_PLUGINS_PATH} ]]; then
+    ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${NAME}:${TMP_DIR}/merged_sorted.csv:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}:${TYPE}:${LATERAL}:${SCALE_BAR}
+else
+    ImageJ-linux64 --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${WORKING_DIRECTORY}:${NAME}:${TMP_DIR}/merged_sorted.csv:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}:${TYPE}:${LATERAL}:${SCALE_BAR}
+fi
 
 # Copy raw csv file back to Work directory
 cp ${TMP_DIR}/merged_sorted.csv ${WORKING_DIRECTORY}/pre-post-processed.csv
