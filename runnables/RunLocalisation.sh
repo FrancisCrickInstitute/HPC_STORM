@@ -126,10 +126,11 @@ else
 fi
 
 # Check for an error output and see if there was a display error
-if echo $output_logging | grep "Can't connect to X11 window server using"; then
+echo "Output from imagej:"
+echo ${output_logging}
+if echo ${output_logging} | grep "Can't connect to X11 window server using"; then
     read -p "press enter to continue"
 fi
-
 
 echo "Finishing Localization time $(date)"
 
