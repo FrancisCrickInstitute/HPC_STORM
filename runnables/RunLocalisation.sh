@@ -80,16 +80,6 @@ cleanup() {
     if [[ ! -z "$TMP_DIR" ]]; then
         rm -r ${TMP_DIR}
     fi
-
-    # Check for an error output and see if there was a display error
-    if [[ ! -z "${output_logging}" ]]; then
-        echo "Output from imagej:"
-        echo ${output_logging}
-
-        case "${output_logging}" in
-            *X11* ) echo "Identified a display failure"; read -p "press enter to continue"
-        esac
-    fi
 }
 
 trap cleanup 0 1 2 3 6 15 EXIT
@@ -104,8 +94,8 @@ export DISPLAY=${DISPLAY}
 echo "Display is: ${DISPLAY}"
 
 # Logging
-data=$(netstat -an | grep ${DISPLAY:1})
-echo ${data}
+#data=$(netstat -an | grep ${DISPLAY:1})
+#echo ${data}
 
 # Handle our camera
 source ${OUTPUT}/${CAMERA}
@@ -131,9 +121,9 @@ chmod -R 777 ${TMP_DIR}
 # Run the analysis
 echo "Running localisation script with parameters: ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}"
 if [[ -z ${CUSTOM_PLUGINS_PATH} ]]; then
-    output_logging=$( (ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}) 2>&1)
+    ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
 else
-    output_logging=$( (ImageJ-linux64 --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}) 2>&1)
+    ImageJ-linux64 --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
 fi
 
 echo "Finishing Localization time $(date)"
