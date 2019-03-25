@@ -85,7 +85,7 @@ cleanup() {
     if [[ ! -z "${output_logging}" ]]; then
         echo "Output from imagej:"
         echo ${output_logging}
-        if echo ${output_logging} | grep "Can't connect to X11 window server using"; then
+        if echo ${output_logging} | grep "X11 window server"; then
             read -p "press enter to continue"
         fi
     fi
