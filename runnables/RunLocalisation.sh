@@ -120,10 +120,16 @@ chmod -R 777 ${TMP_DIR}
 # Run the analysis
 echo "Running localisation script with parameters: ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}"
 if [[ -z ${CUSTOM_PLUGINS_PATH} ]]; then
-    ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
+    output_logging=$( (ImageJ-linux64 --plugins ${CUSTOM_PLUGINS_PATH} --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}) 2>&1)
 else
-    ImageJ-linux64 --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}
+    output_logging=$( (ImageJ-linux64 --ij2 --allow-multiple --no-splash -macro ${SCRIPT} ${OUTPUT}:${TMP_FILE}:${STEPS}:${START}:${STOP}:${THREED}:${CAMERA:-Unknown}:${CALIB:-NULL}) 2>&1)
 fi
+
+# Check for an error output and see if there was a display error
+if echo $output_logging | grep "Can't connect to X11 window server using"; then
+    read -p "press enter to continue"
+fi
+
 
 echo "Finishing Localization time $(date)"
 
