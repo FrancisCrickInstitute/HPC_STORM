@@ -106,6 +106,7 @@ echo "${LOC_BEFORE} localisations found after merge" >> ${LOGFILE}
 echo "Start Postprocess time $(date)" >> ${LOGFILE}
 
 ##load application module
+module load X11/20180604-GCCcore-7.3.0
 module load fiji/custom-ImageJ-1.51a
 module load Tigervnc/1.9.0
 DISPLAY=$(vncstart)
