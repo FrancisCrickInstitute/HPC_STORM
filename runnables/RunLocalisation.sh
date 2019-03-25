@@ -86,7 +86,9 @@ cleanup() {
         echo "Output from imagej:"
         echo ${output_logging}
         if echo ${output_logging} | grep "X11 window server"; then
+            echo "Identified display failure - attempting to halt exit"
             read -p "press enter to continue"
+            sleep 1000
         fi
     fi
 }
