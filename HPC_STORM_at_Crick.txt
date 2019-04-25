@@ -1,0 +1,106 @@
+HPC_STORM @ Crick Documentation:
+    
+Prerequisites in your HPC environment:
+
+    1) Git
+    2) The following modules present:
+        Python/3.5.2-foss-2016b
+        LibTIFF/4.0.4-foss-2016b
+        fiji/custom-ImageJ-1.51a
+        Tigervnc/1.9.0
+    3) The TigerVNC module exposes a script called vncstart that will return a display id
+    4) A folder containing the ThunderSTORM plugin
+
+Installation:
+
+    1) Identify a common directory for your software (henceforth called 'software')
+    2) In 'software' perform the following git clones:
+        git clone https://github.com/JonathanCSmith/MultiArchitectureExecutor.git
+        git clone https://github.com/FrancisCrickInstitute/HPC_STORM.git
+    3) Inside of the HPC_STORM folder, checkout the Crick specific branch using the following code:
+        git checkout feature/running_on_camp
+    4) Create a folder for your dataset of interest (henceforth called 'dataset')
+    5) Create three folders inside of 'dataset' corresponding to source, working, output (henceforth called their respective names - adjust the script below to correct)
+    6) Inside of 'dataset' create a shell script (ideally labelled execute.sh) according to the following template:
+        #!/usr/bin/env bash
+        module purge
+        module load Python/3.5.2-foss-2016b
+        python3 <path to 'software/MultiArchitectureExecutor/run.py'> --source_directory ./source --output_directory ./output --working_directory ./working --scripts_directory <path to 'software/HPC_STORM/'> --runtime_provider <path to 'software/MultiArchitectureExecutor/providers/cluster/provider.py'>
+    7) Optionally inside of 'dataset' create a shell script (ideally labelled execute_outer.sh) that queues the execute.sh script with your local provider for example:
+        #!/usr/bin/env bash
+        JOBID=$(sbatch execute.sh)
+        echo $JOBID
+
+Configuration:
+
+    There are two configuration files for this runtime:
+
+    1) cluster_properties.json:
+
+        This file is used by 'software/MultiArchitectureExecutor/providers/cluster/provider.py' to identify how a job should be submitted. The minimal viable contents are listed below:
+
+        {
+            "submission_wrapper": "<path to 'software'>/MultiArchitectureExecutor/providers/cluster/slurm/slurm_submit_32.sh",
+            "logging_cleanup": true
+        }
+
+        The "submission_wrapper" variable can be used to select different submission wrappers (e.g. to acquire more RAM per job - examples for slurm are provided). This can be further subdivided to specify submission wrappers per step (steps are delimited by the shell script used to execute them, in this case the steps are located in 'software/HPC_STORM/runnables'), a more comprehensive example of this can be seen below:
+
+        {
+            "submission_wrapper": {
+                "RunLocalisation.sh": "<path to 'software'>/MultiArchitectureExecutor/providers/cluster/slurm/slurm_submit_highmem.sh",
+                "default": "<path to 'software'>/MultiArchitectureExecutor/providers/cluster/slurm/slurm_submit.sh"
+            },
+        }
+
+        Looking into the slurm folder listed above will detail the available submission wrappers, although feel free to use your own (use the originals to identify which parameters need to parsed for proper working).
+
+        Finally, logging_cleanup can be set to true or false to preserve all runtime logs.
+
+    2) parameters.json
+
+        This is a file that is passed to the HPC_STORM software, the full list of configurables are detailed below, but note the corresponding values listed are also the software defaults, should a value be ommited from the parameters.json, the default will be adopted automatically. Also note the comments provided below prevent this from being real json - please remove them (strings after //) before use
+
+        {
+            "max_concurrent_jobs": 100,
+            "target_file_count_per_worker": 100,
+            "plugins_directory": "", // THIS MUST BE SUPPLIED!!!!
+            "camera": "", // defaults to attempting to identify the camera from metadata
+            "threed": false,
+            "post_processing_type": "DRIFT", // can also be "SIGMA" or "DRIFT+SIGMA"
+            "lateral_uncertainty": 50,
+            "calibration_file": "", // Not used in default but must be provided if threed is set to true
+            "scale_bar_enabled": false
+        }
+
+        A list of what each parameter means:
+
+            "max_concurrent_jobs": The max number of cores utilisable by a single individual - set this very high if there is no concern
+            "target_file_count_per_worker": The number of images slices that should be process by each job worker
+            "plugins_directory": a path to a directory containing additional plugins to inject into the Fiji instance
+            "camera": a string representation of your camera as found within the tiff metadata
+            "threed": whether or not the localisation occurs in three dimensions otherwise localisation is 2d
+            "post_processing_type": determins which post processing filters should be used out of the available DRIFT and SIGMA
+            "lateral_uncertainty": appears to determine the zoom ????
+            "calibration_file": The calibration file used for 3D localisation
+            "scale_bar_enabled": Whether or not the scale bar is enabled
+
+Usage:
+
+    1) Place uniquely labelled source data in 'dataset/source'
+    2) Place the two configuration files (detailed above) in 'dataset/working'
+    3) Ensure that the plugins_directory path is provided (full path) in your parameters.json
+    3) Run the following command
+        ./execute_outer.sh
+    4) When complete, processed datasets will be found in your output folder
+
+    Note:
+
+        In this runtime scenario, each unique dataset run contains a unique 'execute.sh'. This is not strictly necessary, and can be made consistent by moving the data into and out of the nested directories (as well as configuration files), but I advise the above as it preserves a record for how data is processed per dataset.
+
+Early cancellation:
+
+    Should you require cancellation of a job set, ensure you kill the outermost job (using the job id returned from execute_outer.sh). This will prevent additional jobs from being submitted.
+
+Any questions let me know!
+Jonathan Smith (jon.smith@crick.ac.uk)

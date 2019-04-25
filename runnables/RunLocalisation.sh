@@ -93,10 +93,6 @@ DISPLAY=$(vncstart)
 export DISPLAY=${DISPLAY}
 echo "Display is: ${DISPLAY}"
 
-# Logging
-#data=$(netstat -an | grep ${DISPLAY:1})
-#echo ${data}
-
 # Handle our camera
 source ${OUTPUT}/${CAMERA}
 echo "Camera is ${CAMERA}"
@@ -127,6 +123,3 @@ else
 fi
 
 echo "Finishing Localization time $(date)"
-
-#vncserver -kill ${DISPLAY}
-#rm -r ${TMP_DIR}
